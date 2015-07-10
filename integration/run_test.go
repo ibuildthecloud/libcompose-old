@@ -1,56 +1,64 @@
 package integration
 
 import (
-	"bytes"
-	"math/rand"
-	"os/exec"
+	"fmt"
 	"testing"
-
-	"github.com/Sirupsen/logrus"
 
 	. "gopkg.in/check.v1"
 )
 
 func Test(t *testing.T) { TestingT(t) }
 
-func RandStr(n int) string {
-	letters := []rune("abcdefghijklmnopqrstuvwxyz")
-	b := make([]rune, n)
-	for i := range b {
-		b[i] = letters[rand.Intn(len(letters))]
-	}
-	return string(b)
-}
-
-type RunSuite struct {
-	command  string
-	projects []string
-}
-
-var _ = Suite(&RunSuite{
-	command: "/home/darren/src/libcompose/test",
-})
-
-func (s *RunSuite) CreateProjectFromText(c *C, input string) string {
-	projectName := "test-project-" + RandStr(7)
-	args := []string{"--verbose", "-p", projectName, "-f", "-", "create"}
-	cmd := exec.Command(s.command, args...)
-	cmd.Stdin = bytes.NewBufferString(input)
-
-	err := cmd.Run()
-	if err != nil {
-		logrus.Errorf("Failed to run %s %v: %v\n with input:\n%s", s.command, err, args, input)
-	}
-
-	c.Assert(err, NotNil)
-
-	return projectName
-}
-
 func (s *RunSuite) TestHelloWorld(c *C) {
-	s.CreateProjectFromText(c, `
+	p := s.CreateProjectFromText(c, `
+	hello:
+	  image: tianon/true
+	`)
+
+	name := fmt.Sprintf("%s_%s_1", p, "hello")
+	cn := s.GetContainerByName(c, name)
+	c.Assert(cn, NotNil)
+
+	c.Assert(cn.Name, Equals, "/"+name)
+}
+
+func (s *RunSuite) TestUp(c *C) {
+	p := s.ProjectFromText(c, "up", `
 	hello:
 	  image: busybox
-	  command: echo hi
+	  stdin_open: true
+	  tty: true
 	`)
+
+	name := fmt.Sprintf("%s_%s_1", p, "hello")
+	cn := s.GetContainerByName(c, name)
+	c.Assert(cn, NotNil)
+
+	c.Assert(cn.State.Running, Equals, true)
+}
+
+func (s *RunSuite) TestDown(c *C) {
+	p := s.ProjectFromText(c, "up", `
+	hello:
+	  image: busybox
+	  stdin_open: true
+	  tty: true
+	`)
+
+	name := fmt.Sprintf("%s_%s_1", p, "hello")
+
+	cn := s.GetContainerByName(c, name)
+	c.Assert(cn, NotNil)
+	c.Assert(cn.State.Running, Equals, true)
+
+	s.FromText(c, p, "down", `
+	hello:
+	  image: busybox
+	  stdin_open: true
+	  tty: true
+	`)
+
+	cn = s.GetContainerByName(c, name)
+	c.Assert(cn, NotNil)
+	c.Assert(cn.State.Running, Equals, false)
 }

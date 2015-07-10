@@ -1,0 +1,89 @@
+{
+	"ImportPath": "github.com/docker/libcompose",
+	"GoVersion": "go1.4.1",
+	"Packages": [
+		"./..."
+	],
+	"Deps": [
+		{
+			"ImportPath": "github.com/Sirupsen/logrus",
+			"Comment": "v0.7.3-2-g26709e2",
+			"Rev": "26709e2714106fb8ad40b773b711ebce25b78914"
+		},
+		{
+			"ImportPath": "github.com/codegangsta/cli",
+			"Comment": "1.2.0-66-g6086d79",
+			"Rev": "6086d7927ec35315964d9fea46df6c04e6d697c1"
+		},
+		{
+			"ImportPath": "github.com/docker/docker/opts",
+			"Comment": "v1.4.1-4485-gcab02a5",
+			"Rev": "cab02a5bbcb6f6bc0d1cfd61820a8134bd5ed525"
+		},
+		{
+			"ImportPath": "github.com/docker/docker/pkg/homedir",
+			"Comment": "v1.4.1-4485-gcab02a5",
+			"Rev": "cab02a5bbcb6f6bc0d1cfd61820a8134bd5ed525"
+		},
+		{
+			"ImportPath": "github.com/docker/docker/pkg/mflag",
+			"Comment": "v1.4.1-4485-gcab02a5",
+			"Rev": "cab02a5bbcb6f6bc0d1cfd61820a8134bd5ed525"
+		},
+		{
+			"ImportPath": "github.com/docker/docker/pkg/nat",
+			"Comment": "v1.4.1-4485-gcab02a5",
+			"Rev": "cab02a5bbcb6f6bc0d1cfd61820a8134bd5ed525"
+		},
+		{
+			"ImportPath": "github.com/docker/docker/pkg/parsers",
+			"Comment": "v1.4.1-4485-gcab02a5",
+			"Rev": "cab02a5bbcb6f6bc0d1cfd61820a8134bd5ed525"
+		},
+		{
+			"ImportPath": "github.com/docker/docker/pkg/ulimit",
+			"Comment": "v1.4.1-4485-gcab02a5",
+			"Rev": "cab02a5bbcb6f6bc0d1cfd61820a8134bd5ed525"
+		},
+		{
+			"ImportPath": "github.com/docker/docker/pkg/units",
+			"Comment": "v1.4.1-4485-gcab02a5",
+			"Rev": "cab02a5bbcb6f6bc0d1cfd61820a8134bd5ed525"
+		},
+		{
+			"ImportPath": "github.com/docker/docker/runconfig",
+			"Comment": "v1.4.1-4485-gcab02a5",
+			"Rev": "cab02a5bbcb6f6bc0d1cfd61820a8134bd5ed525"
+		},
+		{
+			"ImportPath": "github.com/docker/libcontainer/user",
+			"Comment": "v1.4.0-492-g0654f88",
+			"Rev": "0654f88d03bce64a7bb6d4e5ab767475459d5134"
+		},
+		{
+			"ImportPath": "github.com/flynn/go-shlex",
+			"Rev": "3f9db97f856818214da2e1057f8ad84803971cff"
+		},
+		{
+			"ImportPath": "github.com/samalba/dockerclient",
+			"Rev": "dcde6ef8dbe3204aa62038527b948ac9af90ff68"
+		},
+		{
+			"ImportPath": "github.com/stretchr/testify/assert",
+			"Comment": "v1.0-12-g7e4a149",
+			"Rev": "7e4a149930b09fe4c2b134c50ce637457ba6e966"
+		},
+		{
+			"ImportPath": "golang.org/x/crypto/ssh/terminal",
+			"Rev": "4d48e5fa3d62b5e6e71260571bf76c767198ca02"
+		},
+		{
+			"ImportPath": "gopkg.in/check.v1",
+			"Rev": "b3d3430320d4260e5fea99841af984b3badcea63"
+		},
+		{
+			"ImportPath": "gopkg.in/yaml.v2",
+			"Rev": "49c95bdc21843256fb6c4e0d370a05f24a0bf213"
+		}
+	]
+}

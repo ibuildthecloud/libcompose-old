@@ -27,6 +27,10 @@ func DockerClientFlags() []cli.Flag {
 			Name:  "tlskey",
 			Usage: "Path to TLS key file",
 		},
+		cli.StringFlag{
+			Name:  "configdir",
+			Usage: "Path to docker config dir, default ${HOME}/.docker",
+		},
 	}
 }
 
@@ -36,4 +40,5 @@ func Populate(context *docker.Context, c *cli.Context) {
 	context.Ca = c.String("tlscacert")
 	context.Cert = c.String("tlscert")
 	context.Key = c.String("tlskey")
+	context.ConfigDir = c.String("configdir")
 }

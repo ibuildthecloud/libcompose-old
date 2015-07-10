@@ -3,10 +3,11 @@ package docker
 import (
 	"strings"
 
+	"github.com/Sirupsen/logrus"
 	"github.com/docker/docker/pkg/nat"
 	"github.com/docker/docker/runconfig"
 	"github.com/docker/libcompose/project"
-	"github.com/docker/libcompose/util"
+	"github.com/docker/libcompose/utils"
 	"github.com/samalba/dockerclient"
 )
 
@@ -35,12 +36,16 @@ func ConvertToApi(c *project.ServiceConfig) (*dockerclient.ContainerConfig, erro
 	}
 
 	var result dockerclient.ContainerConfig
-	err = util.Convert(config, &result)
+	err = utils.ConvertByJson(config, &result)
 	if err != nil {
+		logrus.Errorf("Failed to convert config to API structure: %v\n%#v", err, config)
 		return nil, err
 	}
 
-	err = util.Convert(hostConfig, &result.HostConfig)
+	err = utils.ConvertByJson(hostConfig, &result.HostConfig)
+	if err != nil {
+		logrus.Errorf("Failed to convert hostConfig to API structure: %v\n%#v", err, hostConfig)
+	}
 	return &result, err
 }
 

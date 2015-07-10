@@ -10,6 +10,7 @@ import (
 	"runtime"
 
 	"github.com/Sirupsen/logrus"
+	"github.com/docker/docker/cliconfig"
 	"github.com/docker/docker/opts"
 	"github.com/docker/docker/pkg/homedir"
 	"github.com/docker/libcompose/project"
@@ -30,22 +31,44 @@ var (
 
 type Context struct {
 	project.Context
-	Client    dockerclient.Client
-	Tls       bool
-	TlsVerify bool
-	TrustKey  string
-	Ca        string
-	Cert      string
-	Key       string
-	Host      string
-	tlsConfig *tls.Config
+	Client     dockerclient.Client
+	Tls        bool
+	TlsVerify  bool
+	TrustKey   string
+	Ca         string
+	Cert       string
+	Key        string
+	Host       string
+	ConfigDir  string
+	ConfigFile *cliconfig.ConfigFile
+	tlsConfig  *tls.Config
 }
 
 func (c *Context) open() error {
-	return c.createClient()
+	err := c.LookupConfig()
+	if err != nil {
+		return err
+	}
+
+	return c.CreateClient()
 }
 
-func (c *Context) createClient() error {
+func (c *Context) LookupConfig() error {
+	if c.ConfigFile != nil {
+		return nil
+	}
+
+	config, err := cliconfig.Load(c.ConfigDir)
+	if err != nil {
+		return err
+	}
+
+	c.ConfigFile = config
+
+	return nil
+}
+
+func (c *Context) CreateClient() error {
 	if c.Client != nil {
 		return nil
 	}
@@ -59,9 +82,6 @@ func (c *Context) createClient() error {
 	if c.Key == "" {
 		c.Key = filepath.Join(dockerCertPath, defaultKeyFile)
 	}
-	//flCa = flag.String([]string{"-tlscacert"}, filepath.Join(dockerCertPath, defaultCaFile), "Trust certs signed only by this CA")
-	//flCert = flag.String([]string{"-tlscert"}, filepath.Join(dockerCertPath, defaultCertFile), "Path to TLS certificate file")
-	//flKey = flag.String([]string{"-tlskey"}, filepath.Join(dockerCertPath, defaultKeyFile), "Path to TLS key file")
 
 	if c.Host == "" {
 		defaultHost := os.Getenv("DOCKER_HOST")

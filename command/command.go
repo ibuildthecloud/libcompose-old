@@ -65,6 +65,13 @@ func StopCommand(factory app.ProjectFactory) cli.Command {
 		ShortName: "down",
 		Usage:     "Stop services",
 		Action:    app.WithProject(factory, app.ProjectDown),
+		Flags: []cli.Flag{
+			cli.IntFlag{
+				Name:  "timeout",
+				Usage: "Specify a shutdown timeout in seconds.",
+				Value: 10,
+			},
+		},
 	}
 }
 
@@ -93,7 +100,7 @@ func RmCommand(factory app.ProjectFactory) cli.Command {
 func CommonFlags() []cli.Flag {
 	return []cli.Flag{
 		cli.BoolFlag{
-			Name: "verbose",
+			Name: "verbose,debug",
 		},
 		cli.StringFlag{
 			Name:   "file,f",
@@ -116,5 +123,7 @@ func Populate(context *project.Context, c *cli.Context) {
 		context.Log = true
 	} else if c.Command.Name == "up" {
 		context.Log = !c.Bool("d")
+	} else if c.Command.Name == "stop" {
+		context.Timeout = c.Int("timeout")
 	}
 }

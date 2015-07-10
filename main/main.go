@@ -4,10 +4,10 @@ import (
 	"os"
 
 	"github.com/codegangsta/cli"
-	"github.com/docker/libcompose"
 	cliApp "github.com/docker/libcompose/app"
 	"github.com/docker/libcompose/command"
 	dockerApp "github.com/docker/libcompose/docker/app"
+	"github.com/docker/libcompose/version"
 )
 
 func main() {
@@ -16,9 +16,9 @@ func main() {
 	app := cli.NewApp()
 	app.Name = "docker-compose"
 	app.Usage = "Fast, isolated environments using Docker."
-	app.Version = libcompose.VERSION
-	app.Author = "Docker Community"
-	app.Email = ""
+	app.Version = version.VERSION + " (" + version.GITCOMMIT + ")"
+	app.Author = "Docker Compose Contributors"
+	app.Email = "https://github.com/docker/libcompose"
 	app.Before = cliApp.BeforeApp
 	app.Flags = append(command.CommonFlags(), dockerApp.DockerClientFlags()...)
 	app.Commands = []cli.Command{

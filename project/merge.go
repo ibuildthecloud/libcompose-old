@@ -8,7 +8,7 @@ import (
 	"strings"
 
 	"github.com/Sirupsen/logrus"
-	"github.com/docker/libcompose/util"
+	"github.com/docker/libcompose/utils"
 	"gopkg.in/yaml.v2"
 )
 
@@ -48,14 +48,14 @@ func Merge(p *Project, bytes []byte) (map[string]*ServiceConfig, error) {
 		datas[name] = data
 	}
 
-	err = util.Convert(datas, &configs)
+	err = utils.Convert(datas, &configs)
 	return configs, err
 }
 
 func readEnvFile(configLookup ConfigLookup, inFile string, serviceData rawService) (rawService, error) {
 	var config ServiceConfig
 
-	if err := util.Convert(serviceData, &config); err != nil {
+	if err := utils.Convert(serviceData, &config); err != nil {
 		return nil, err
 	}
 

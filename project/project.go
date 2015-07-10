@@ -6,6 +6,7 @@ import (
 	"strings"
 
 	log "github.com/Sirupsen/logrus"
+	"github.com/docker/libcompose/logger"
 )
 
 type ServiceState string
@@ -28,6 +29,10 @@ func NewProject(context *Context) *Project {
 	p := &Project{
 		context: context,
 		Configs: make(map[string]*ServiceConfig),
+	}
+
+	if context.LoggerFactory == nil {
+		context.LoggerFactory = &logger.NullLogger{}
 	}
 
 	context.Project = p
