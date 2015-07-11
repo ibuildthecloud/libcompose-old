@@ -14,7 +14,6 @@ type ColorLoggerFactory struct {
 }
 
 type ColorLogger struct {
-	NewLine     string
 	name        string
 	colorPrefix string
 	factory     *ColorLoggerFactory
@@ -32,7 +31,6 @@ func (c *ColorLoggerFactory) Create(name string) Logger {
 	}
 
 	return &ColorLogger{
-		NewLine:     "",
 		name:        name,
 		factory:     c,
 		colorPrefix: <-colorPrefix,
@@ -52,7 +50,7 @@ func (c *ColorLogger) Err(bytes []byte) {
 }
 
 func (c *ColorLogger) getLogFmt() (string, string) {
-	pad := c.factory.maxLength + 3
+	pad := c.factory.maxLength
 
 	logFmt := "%s | %s"
 	if c.factory.tty {
@@ -61,5 +59,5 @@ func (c *ColorLogger) getLogFmt() (string, string) {
 
 	name := fmt.Sprintf("%-"+strconv.Itoa(pad)+"s", c.name)
 
-	return logFmt + c.NewLine, name
+	return logFmt, name
 }
