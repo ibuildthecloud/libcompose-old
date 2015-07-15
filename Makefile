@@ -2,6 +2,9 @@
 
 all: validate test build
 
+clean:
+	script/clean
+
 test:
 	script/test
 

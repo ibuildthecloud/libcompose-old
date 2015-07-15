@@ -44,11 +44,17 @@ func (s *RunSuite) ProjectFromText(c *C, command, input string) string {
 	return s.FromText(c, projectName, command, input)
 }
 
-func (s *RunSuite) FromText(c *C, projectName, command, input string) string {
+func (s *RunSuite) FromText(c *C, projectName, command string, argsAndInput ...string) string {
 	args := []string{"--verbose", "-p", projectName, "-f", "-", command}
+	args = append(args, argsAndInput[0:len(argsAndInput)-1]...)
+
+	input := argsAndInput[len(argsAndInput)-1]
+
 	if command == "up" {
 		args = append(args, "-d")
 	} else if command == "down" {
+		args = append(args, "--timeout", "0")
+	} else if command == "stop" {
 		args = append(args, "--timeout", "0")
 	}
 
