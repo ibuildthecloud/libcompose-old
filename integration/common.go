@@ -54,9 +54,13 @@ func (s *RunSuite) FromText(c *C, projectName, command string, argsAndInput ...s
 		args = append(args, "-d")
 	} else if command == "down" {
 		args = append(args, "--timeout", "0")
+	} else if command == "restart" {
+		args = append(args, "--timeout", "0")
 	} else if command == "stop" {
 		args = append(args, "--timeout", "0")
 	}
+
+	logrus.Infof("Running %s %v", command, args)
 
 	cmd := exec.Command(s.command, args...)
 	cmd.Stdin = bytes.NewBufferString(strings.Replace(input, "\t", "  ", -1))
@@ -97,4 +101,13 @@ func (s *RunSuite) GetContainerByName(c *C, name string) *dockerclient.Container
 	c.Assert(err, IsNil)
 
 	return info
+}
+
+func (s *RunSuite) GetContainersByProject(c *C, project string) []dockerclient.Container {
+	client := GetClient(c)
+	containers, err := docker.GetContainersByFilter(client, docker.PROJECT.Eq(project))
+
+	c.Assert(err, IsNil)
+
+	return containers
 }

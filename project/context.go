@@ -13,6 +13,7 @@ import (
 type Context struct {
 	Timeout             int
 	Log                 bool
+	Signal              string
 	ComposeFile         string
 	ComposeBytes        []byte
 	ProjectName         string

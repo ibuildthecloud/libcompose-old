@@ -11,6 +11,10 @@ func (e *EmptyService) Up() error {
 	return nil
 }
 
+func (e *EmptyService) Start() error {
+	return nil
+}
+
 func (e *EmptyService) Down() error {
 	return nil
 }
@@ -28,6 +32,10 @@ func (e *EmptyService) Log() error {
 }
 
 func (e *EmptyService) Pull() error {
+	return nil
+}
+
+func (e *EmptyService) Kill() error {
 	return nil
 }
 

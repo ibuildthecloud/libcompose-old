@@ -23,6 +23,10 @@ const (
 	SERVICE_RESTART       = Event("Restarted")
 	SERVICE_PULL_START    = Event("Pulling")
 	SERVICE_PULL          = Event("Pulled")
+	SERVICE_KILL_START    = Event("Killing")
+	SERVICE_KILL          = Event("Killed")
+	SERVICE_START_START   = Event("Starting")
+	SERVICE_START         = Event("Started")
 
 	PROJECT_DOWN_START     = Event("Stopping project")
 	PROJECT_DOWN_DONE      = Event("Project stopped")
@@ -36,6 +40,10 @@ const (
 	PROJECT_RESTART_DONE   = Event("Project restarted")
 	PROJECT_RELOAD         = Event("Reloading project")
 	PROJECT_RELOAD_TRIGGER = Event("Triggering project reload")
+	PROJECT_KILL_START     = Event("Killing project")
+	PROJECT_KILL_DONE      = Event("Project killed")
+	PROJECT_START_START    = Event("Starting project")
+	PROJECT_START_DONE     = Event("Project started")
 )
 
 type ServiceConfig struct {
@@ -108,11 +116,13 @@ type Service interface {
 	Name() string
 	Create() error
 	Up() error
+	Start() error
 	Down() error
 	Delete() error
 	Restart() error
 	Log() error
 	Pull() error
+	Kill() error
 	Config() *ServiceConfig
 	DependentServices() []ServiceRelationship
 	Containers() ([]Container, error)

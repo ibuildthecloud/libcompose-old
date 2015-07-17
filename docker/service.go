@@ -7,8 +7,6 @@ import (
 )
 
 type Service struct {
-	project.EmptyService
-
 	name          string
 	serviceConfig *project.ServiceConfig
 	context       *Context
@@ -27,12 +25,12 @@ func (s *Service) DependentServices() []project.ServiceRelationship {
 }
 
 func (s *Service) Create() error {
-	_, err := s.doCreate(true)
+	_, err := s.createOne()
 	return err
 }
 
 func (s *Service) collectContainers() ([]*Container, error) {
-	containers, err := GetContainerByFilter(s.context.Client, SERVICE.Eq(s.name), PROJECT.Eq(s.context.Project.Name))
+	containers, err := GetContainersByFilter(s.context.Client, SERVICE.Eq(s.name), PROJECT.Eq(s.context.Project.Name))
 	if err != nil {
 		return nil, err
 	}
@@ -40,31 +38,48 @@ func (s *Service) collectContainers() ([]*Container, error) {
 	result := []*Container{}
 
 	for _, container := range containers {
-		result = append(result, NewContainer(container.Labels[NAME.Str()], s))
+		result = append(result, NewContainer(s.context.Client, container.Labels[NAME.Str()], s))
 	}
 
 	return result, nil
 }
 
-func (s *Service) doCreate(create bool) (*Container, error) {
-	containers, err := s.collectContainers()
-	if err != nil {
-		return nil, err
-	} else if len(containers) > 0 {
-		return containers[0], err
-	}
-
-	containerName, err := OneName(s.context.Client, s.context.Project.Name, s.name)
+func (s *Service) createOne() (*Container, error) {
+	containers, err := s.constructContainers(true, 1)
 	if err != nil {
 		return nil, err
 	}
 
-	c := NewContainer(containerName, s)
+	return containers[0], err
+}
 
-	if create {
-		_, err = c.Create()
+func (s *Service) constructContainers(create bool, count int) ([]*Container, error) {
+	result, err := s.collectContainers()
+	if err != nil {
+		return nil, err
 	}
-	return c, err
+
+	namer := NewNamer(s.context.Client, s.context.Project.Name, s.name)
+	defer namer.Close()
+
+	for i := len(result); i < count; i++ {
+		containerName := namer.Next()
+
+		c := NewContainer(s.context.Client, containerName, s)
+
+		if create {
+			dockerContainer, err := c.Create()
+			if err != nil {
+				return nil, err
+			} else {
+				logrus.Debugf("Created container %s: %v", dockerContainer.Id, dockerContainer.Names)
+			}
+		}
+
+		result = append(result, NewContainer(s.context.Client, containerName, s))
+	}
+
+	return result, nil
 }
 
 func (s *Service) Up() error {
@@ -86,7 +101,7 @@ func (s *Service) up(create bool) error {
 	//TODO: Replace here if needed
 
 	if len(containers) == 0 && create {
-		c, err := s.doCreate(true)
+		c, err := s.createOne()
 		if err != nil {
 			return err
 		}
@@ -130,6 +145,12 @@ func (s *Service) Restart() error {
 	})
 }
 
+func (s *Service) Kill() error {
+	return s.eachContainer(func(c *Container) error {
+		return c.Kill()
+	})
+}
+
 func (s *Service) Delete() error {
 	return s.eachContainer(func(c *Container) error {
 		return c.Delete()
@@ -142,13 +163,43 @@ func (s *Service) Log() error {
 	})
 }
 
-func (s *Service) Pull() error {
-	c, err := s.doCreate(false)
+func (s *Service) Scale(scale int) error {
+	foundCount := 0
+	err := s.eachContainer(func(c *Container) error {
+		foundCount++
+		if foundCount > scale {
+			err := c.Down()
+			if err != nil {
+				return err
+			}
+
+			return c.Delete()
+		}
+		return nil
+	})
+
 	if err != nil {
 		return err
 	}
 
-	return c.Pull()
+	if foundCount != scale {
+		_, err := s.constructContainers(true, scale)
+		if err != nil {
+			return err
+		}
+
+	}
+
+	return s.up(false)
+}
+
+func (s *Service) Pull() error {
+	containers, err := s.constructContainers(false, 1)
+	if err != nil {
+		return err
+	}
+
+	return containers[0].Pull()
 }
 
 func (s *Service) Containers() ([]project.Container, error) {

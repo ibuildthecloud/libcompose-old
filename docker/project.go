@@ -8,10 +8,18 @@ import (
 )
 
 func NewProject(context *Context) (*project.Project, error) {
-	context.ConfigLookup = &lookup.FileConfigLookup{}
-	context.EnvironmentLookup = &lookup.OsEnvLookup{}
-	context.ServiceFactory = &ServiceFactory{
-		context: context,
+	if context.ConfigLookup == nil {
+		context.ConfigLookup = &lookup.FileConfigLookup{}
+	}
+
+	if context.EnvironmentLookup == nil {
+		context.EnvironmentLookup = &lookup.OsEnvLookup{}
+	}
+
+	if context.ServiceFactory == nil {
+		context.ServiceFactory = &ServiceFactory{
+			context: context,
+		}
 	}
 
 	p := project.NewProject(&context.Context)
