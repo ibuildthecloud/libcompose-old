@@ -22,6 +22,7 @@ func main() {
 	app.Before = cliApp.BeforeApp
 	app.Flags = append(command.CommonFlags(), dockerApp.DockerClientFlags()...)
 	app.Commands = []cli.Command{
+		command.BuildCommand(factory),
 		command.CreateCommand(factory),
 		command.UpCommand(factory),
 		command.StartCommand(factory),

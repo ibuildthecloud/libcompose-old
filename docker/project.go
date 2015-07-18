@@ -22,6 +22,10 @@ func NewProject(context *Context) (*project.Project, error) {
 		}
 	}
 
+	if context.Builder == nil {
+		context.Builder = NewDaemonBuilder(context)
+	}
+
 	p := project.NewProject(&context.Context)
 
 	err := p.Parse()

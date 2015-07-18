@@ -37,14 +37,14 @@ func (c *Container) findExisting() (*dockerclient.Container, error) {
 	return GetContainerByName(c.client, c.name)
 }
 
-func (c *Container) Create() (*dockerclient.Container, error) {
+func (c *Container) Create(imageName string) (*dockerclient.Container, error) {
 	container, err := c.findExisting()
 	if err != nil {
 		return nil, err
 	}
 
 	if container == nil {
-		container, err = c.createContainer()
+		container, err = c.createContainer(imageName)
 		if err != nil {
 			return nil, err
 		}
@@ -86,7 +86,7 @@ func (c *Container) Delete() error {
 	return c.client.RemoveContainer(container.Id, true, false)
 }
 
-func (c *Container) Up() error {
+func (c *Container) Up(imageName string) error {
 	var err error
 
 	defer func() {
@@ -95,7 +95,7 @@ func (c *Container) Up() error {
 		}
 	}()
 
-	container, err := c.Create()
+	container, err := c.Create(imageName)
 	if err != nil {
 		return err
 	}
@@ -118,11 +118,13 @@ func (c *Container) Up() error {
 	return nil
 }
 
-func (c *Container) createContainer() (*dockerclient.Container, error) {
+func (c *Container) createContainer(imageName string) (*dockerclient.Container, error) {
 	config, err := ConvertToApi(c.service.serviceConfig)
 	if err != nil {
 		return nil, err
 	}
+
+	config.Image = imageName
 
 	if config.Labels == nil {
 		config.Labels = map[string]string{}

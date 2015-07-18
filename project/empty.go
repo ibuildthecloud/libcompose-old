@@ -7,6 +7,10 @@ func (e *EmptyService) Create() error {
 	return nil
 }
 
+func (e *EmptyService) Build() error {
+	return nil
+}
+
 func (e *EmptyService) Up() error {
 	return nil
 }

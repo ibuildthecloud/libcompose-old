@@ -10,6 +10,7 @@ type Service struct {
 	name          string
 	serviceConfig *project.ServiceConfig
 	context       *Context
+	imageName     string
 }
 
 func (s *Service) Name() string {
@@ -53,6 +54,29 @@ func (s *Service) createOne() (*Container, error) {
 	return containers[0], err
 }
 
+func (s *Service) Build() error {
+	_, err := s.build()
+	return err
+}
+
+func (s *Service) build() (string, error) {
+	if s.imageName != "" {
+		return s.imageName, nil
+	}
+
+	if s.context.Builder == nil {
+		s.imageName = s.Config().Image
+	} else {
+		var err error
+		s.imageName, err = s.context.Builder.Build(s.context.Project, s)
+		if err != nil {
+			return "", err
+		}
+	}
+
+	return s.imageName, nil
+}
+
 func (s *Service) constructContainers(create bool, count int) ([]*Container, error) {
 	result, err := s.collectContainers()
 	if err != nil {
@@ -68,7 +92,12 @@ func (s *Service) constructContainers(create bool, count int) ([]*Container, err
 		c := NewContainer(s.context.Client, containerName, s)
 
 		if create {
-			dockerContainer, err := c.Create()
+			imageName, err := s.build()
+			if err != nil {
+				return nil, err
+			}
+
+			dockerContainer, err := c.Create(imageName)
 			if err != nil {
 				return nil, err
 			} else {
@@ -83,14 +112,19 @@ func (s *Service) constructContainers(create bool, count int) ([]*Container, err
 }
 
 func (s *Service) Up() error {
-	return s.up(true)
+	imageName, err := s.build()
+	if err != nil {
+		return err
+	}
+
+	return s.up(imageName, true)
 }
 
 func (s *Service) Start() error {
-	return s.up(false)
+	return s.up("", false)
 }
 
-func (s *Service) up(create bool) error {
+func (s *Service) up(imageName string, create bool) error {
 	containers, err := s.collectContainers()
 	if err != nil {
 		return err
@@ -109,7 +143,7 @@ func (s *Service) up(create bool) error {
 	}
 
 	return s.eachContainer(func(c *Container) error {
-		return c.Up()
+		return c.Up(imageName)
 	})
 }
 
@@ -190,7 +224,7 @@ func (s *Service) Scale(scale int) error {
 
 	}
 
-	return s.up(false)
+	return s.up("", false)
 }
 
 func (s *Service) Pull() error {

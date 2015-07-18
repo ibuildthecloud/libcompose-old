@@ -142,6 +142,14 @@ func (p *Project) loadWrappers(wrappers map[string]*serviceWrapper) error {
 	return nil
 }
 
+func (p *Project) Build(services ...string) error {
+	return p.perform(PROJECT_BUILD_START, PROJECT_BUILD_DONE, services, wrapperAction(func(wrapper *serviceWrapper, wrappers map[string]*serviceWrapper) {
+		wrapper.Do(wrappers, SERVICE_BUILD_START, SERVICE_BUILD, func(service Service) error {
+			return service.Build()
+		})
+	}), nil)
+}
+
 func (p *Project) Create(services ...string) error {
 	return p.perform(PROJECT_CREATE_START, PROJECT_CREATE_DONE, services, wrapperAction(func(wrapper *serviceWrapper, wrappers map[string]*serviceWrapper) {
 		wrapper.Do(wrappers, SERVICE_CREATE_START, SERVICE_CREATE, func(service Service) error {

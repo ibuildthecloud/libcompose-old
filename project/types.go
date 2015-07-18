@@ -27,6 +27,8 @@ const (
 	SERVICE_KILL          = Event("Killed")
 	SERVICE_START_START   = Event("Starting")
 	SERVICE_START         = Event("Started")
+	SERVICE_BUILD_START   = Event("Building")
+	SERVICE_BUILD         = Event("Built")
 
 	PROJECT_DOWN_START     = Event("Stopping project")
 	PROJECT_DOWN_DONE      = Event("Project stopped")
@@ -44,6 +46,8 @@ const (
 	PROJECT_KILL_DONE      = Event("Project killed")
 	PROJECT_START_START    = Event("Starting project")
 	PROJECT_START_DONE     = Event("Project started")
+	PROJECT_BUILD_START    = Event("Building project")
+	PROJECT_BUILD_DONE     = Event("Project built")
 )
 
 type ServiceConfig struct {
@@ -114,6 +118,7 @@ type Project struct {
 
 type Service interface {
 	Name() string
+	Build() error
 	Create() error
 	Up() error
 	Start() error

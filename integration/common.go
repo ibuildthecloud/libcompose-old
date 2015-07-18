@@ -32,15 +32,19 @@ type RunSuite struct {
 }
 
 var _ = Suite(&RunSuite{
-	command: "/home/darren/src/libcompose/test",
+	command: "../docker-compose_linux-amd64",
 })
 
 func (s *RunSuite) CreateProjectFromText(c *C, input string) string {
 	return s.ProjectFromText(c, "create", input)
 }
 
+func (s *RunSuite) RandomProject() string {
+	return "test-project-" + RandStr(7)
+}
+
 func (s *RunSuite) ProjectFromText(c *C, command, input string) string {
-	projectName := "test-project-" + RandStr(7)
+	projectName := s.RandomProject()
 	return s.FromText(c, projectName, command, input)
 }
 

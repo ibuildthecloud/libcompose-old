@@ -31,12 +31,22 @@
 			"Rev": "bdcae0597f11ce5ac8b5be8f1c5a56ade7e97b26"
 		},
 		{
+			"ImportPath": "github.com/docker/docker/api",
+			"Comment": "v1.4.1-4485-gcab02a5",
+			"Rev": "cab02a5bbcb6f6bc0d1cfd61820a8134bd5ed525"
+		},
+		{
 			"ImportPath": "github.com/docker/docker/autogen/dockerversion",
 			"Comment": "v1.4.1-4485-gcab02a5",
 			"Rev": "cab02a5bbcb6f6bc0d1cfd61820a8134bd5ed525"
 		},
 		{
 			"ImportPath": "github.com/docker/docker/cliconfig",
+			"Comment": "v1.4.1-4485-gcab02a5",
+			"Rev": "cab02a5bbcb6f6bc0d1cfd61820a8134bd5ed525"
+		},
+		{
+			"ImportPath": "github.com/docker/docker/daemon/network",
 			"Comment": "v1.4.1-4485-gcab02a5",
 			"Rev": "cab02a5bbcb6f6bc0d1cfd61820a8134bd5ed525"
 		},
@@ -181,6 +191,11 @@
 			"Rev": "cab02a5bbcb6f6bc0d1cfd61820a8134bd5ed525"
 		},
 		{
+			"ImportPath": "github.com/docker/docker/pkg/version",
+			"Comment": "v1.4.1-4485-gcab02a5",
+			"Rev": "cab02a5bbcb6f6bc0d1cfd61820a8134bd5ed525"
+		},
+		{
 			"ImportPath": "github.com/docker/docker/registry",
 			"Comment": "v1.4.1-4485-gcab02a5",
 			"Rev": "cab02a5bbcb6f6bc0d1cfd61820a8134bd5ed525"
@@ -201,6 +216,10 @@
 			"Rev": "0654f88d03bce64a7bb6d4e5ab767475459d5134"
 		},
 		{
+			"ImportPath": "github.com/docker/libtrust",
+			"Rev": "c54fbb67c1f1e68d7d6f8d2ad7c9360404616a41"
+		},
+		{
 			"ImportPath": "github.com/flynn/go-shlex",
 			"Rev": "3f9db97f856818214da2e1057f8ad84803971cff"
 		},
@@ -214,7 +233,7 @@
 		},
 		{
 			"ImportPath": "github.com/samalba/dockerclient",
-			"Rev": "dcde6ef8dbe3204aa62038527b948ac9af90ff68"
+			"Rev": "bbdc3018c34ccf69254111bb32b4e33bb45b6d70"
 		},
 		{
 			"ImportPath": "github.com/stretchr/testify/assert",

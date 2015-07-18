@@ -14,6 +14,14 @@ func CreateCommand(factory app.ProjectFactory) cli.Command {
 	}
 }
 
+func BuildCommand(factory app.ProjectFactory) cli.Command {
+	return cli.Command{
+		Name:   "build",
+		Usage:  "Build or rebuild services.",
+		Action: app.WithProject(factory, app.ProjectBuild),
+	}
+}
+
 func UpCommand(factory app.ProjectFactory) cli.Command {
 	return cli.Command{
 		Name:   "up",

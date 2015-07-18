@@ -36,6 +36,13 @@ func ProjectDown(p *project.Project, c *cli.Context) {
 	}
 }
 
+func ProjectBuild(p *project.Project, c *cli.Context) {
+	err := p.Build(c.Args()...)
+	if err != nil {
+		logrus.Fatal(err)
+	}
+}
+
 func ProjectCreate(p *project.Project, c *cli.Context) {
 	err := p.Create(c.Args()...)
 	if err != nil {
